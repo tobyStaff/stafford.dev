@@ -1,0 +1,109 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Build outputs
+client/dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+server.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Database files
+*.sqlite
+*.db
+
+# Session files
+sessions/
+
+# Backup files
+backups/
+
+# SSH keys
+.ssh/
+
+# Claude specific
+.claude/
+
+# Cache
+.cache/
+.npm/
+
+# PM2
+ecosystem.config.js
+
+# Certificate files
+*.pem
+*.key
+*.crt
+*.csr
+
+# Cookies and auth tokens
+cookies.txt
+
+# Claude configuration files (contain secrets)
+.claude*
+.claude.json
+.claude.json.backup
