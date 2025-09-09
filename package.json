@@ -1,13 +1,20 @@
 {
-  "name": "secure-web-server",
+  "name": "stafford-dev-portfolio",
   "version": "1.0.0",
-  "description": "A secure Express.js web server",
+  "description": "Stafford.dev - Dark mode React portfolio site with Express.js backend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
+    "start": "./scripts/start-server.sh",
+    "stop": "./scripts/stop-server.sh",
+    "restart": "./scripts/restart-server.sh",
+    "deploy": "./scripts/deploy.sh",
+    "dev": "./scripts/dev-server.sh",
+    "server": "node server.js",
+    "build": "cd client && npm run build",
     "init-db": "node scripts/init-db.js",
-    "init-db-force": "node scripts/init-db.js --force"
+    "init-db-force": "node scripts/init-db.js --force",
+    "logs": "tail -f server.log",
+    "status": "./scripts/status.sh"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
