@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react'
 
 const Admin = () => {
   const [user, setUser] = useState(null)
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchUserData()
+    fetchUsers()
   }, [])
 
   const fetchUserData = async () => {
@@ -21,13 +24,42 @@ const Admin = () => {
     }
   }
 
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('/api/admin/users', {
+        credentials: 'include'
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setUsers(data.users || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch users:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Never'
+    const date = new Date(dateString)
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    })
+  }
+
   // User data is guaranteed to be available due to AdminRoute wrapper
-  if (!user) {
+  if (!user || loading) {
     return (
       <div className="min-h-screen bg-primary-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-300">Loading user data...</p>
+          <p className="mt-4 text-gray-300">Loading admin dashboard...</p>
         </div>
       </div>
     )
@@ -88,7 +120,7 @@ const Admin = () => {
               </div>
               <div className="card">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-orange-400">1</div>
+                  <div className="text-3xl font-bold text-orange-400">{users.length}</div>
                   <p className="text-sm text-gray-300 mt-1">Users</p>
                 </div>
               </div>
@@ -154,6 +186,98 @@ const Admin = () => {
                 <div className="text-sm text-gray-300">Coming soon</div>
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* User Management */}
+        <div className="mt-8">
+          <div className="card">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              User Management ({users.length} users)
+            </h3>
+            
+            {users.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-gray-400 text-4xl mb-4">👥</div>
+                <p className="text-gray-300">No users found</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-primary-600">
+                      <th className="text-left py-3 px-4 text-gray-300 font-medium">User</th>
+                      <th className="text-left py-3 px-4 text-gray-300 font-medium">Email</th>
+                      <th className="text-left py-3 px-4 text-gray-300 font-medium">Provider</th>
+                      <th className="text-left py-3 px-4 text-gray-300 font-medium">Last Login</th>
+                      <th className="text-left py-3 px-4 text-gray-300 font-medium">Joined</th>
+                      <th className="text-left py-3 px-4 text-gray-300 font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((userData) => (
+                      <tr key={userData.id} className="border-b border-primary-700 hover:bg-primary-700 transition-colors">
+                        <td className="py-3 px-4">
+                          <div className="flex items-center space-x-3">
+                            <img
+                              src={userData.profile_photo_url || 'https://via.placeholder.com/32'}
+                              alt="Profile"
+                              className="w-8 h-8 rounded-full"
+                            />
+                            <div>
+                              <p className="text-white font-medium">
+                                {userData.display_name || userData.username || 'Unknown'}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-gray-300">
+                          {userData.email}
+                          {userData.email === user.email && (
+                            <span className="ml-2 text-xs bg-purple-600 px-2 py-1 rounded-full text-white">
+                              You
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
+                            userData.auth_provider === 'google' 
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-600 text-gray-300'
+                          }`}>
+                            {userData.auth_provider === 'google' ? 'Google' : 'Local'}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-gray-300">
+                          <div>
+                            <p>{formatDate(userData.last_login)}</p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-gray-300">
+                          {formatDate(userData.created_at)}
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center space-x-2">
+                            <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
+                              userData.is_active 
+                                ? 'bg-green-600 text-white'
+                                : 'bg-red-600 text-white'
+                            }`}>
+                              {userData.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                            {userData.email_verified && (
+                              <span className="inline-flex px-2 py-1 text-xs rounded-full bg-blue-600 text-white">
+                                Verified
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
 

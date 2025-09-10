@@ -265,6 +265,33 @@ app.use('/', authRoutes);
 // Mount admin routes with admin restriction
 app.use('/admin', requireAdmin, adminRoutes);
 
+// Admin API endpoints
+app.get('/api/admin/users', requireAdmin, async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: [
+        'id',
+        'email', 
+        'username',
+        'display_name',
+        'profile_photo_url',
+        'auth_provider',
+        'is_active',
+        'email_verified',
+        'last_login',
+        'created_at',
+        'updated_at'
+      ],
+      order: [['last_login', 'DESC'], ['created_at', 'DESC']]
+    });
+    
+    res.json({ users: users.map(user => user.toSafeJSON()) });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
 // Auth routes with validation
 app.post('/api/register', 
   authLimiter,
