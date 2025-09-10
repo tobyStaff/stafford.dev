@@ -2,32 +2,32 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
-// Login page
-router.get('/login', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Login - Stafford.dev</title>
-      <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-        .login-container { max-width: 400px; margin: 0 auto; padding: 40px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .google-btn { background: #4285f4; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; font-size: 16px; }
-        .google-btn:hover { background: #357ae8; }
-        .home-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
-      </style>
-    </head>
-    <body>
-      <div class="login-container">
-        <h1>Welcome to Stafford.dev</h1>
-        <p>Please sign in with your Google account</p>
-        <a href="/auth/google" class="google-btn">Sign in with Google</a>
-        <a href="/" class="home-link">← Back to Home</a>
-      </div>
-    </body>
-    </html>
-  `);
-});
+// Login page - Commented out to let React app handle /login route
+// router.get('/login', (req, res) => {
+//   res.send(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <title>Login - Stafford.dev</title>
+//       <style>
+//         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
+//         .login-container { max-width: 400px; margin: 0 auto; padding: 40px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+//         .google-btn { background: #4285f4; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; font-size: 16px; }
+//         .google-btn:hover { background: #357ae8; }
+//         .home-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+//       </style>
+//     </head>
+//     <body>
+//       <div class="login-container">
+//         <h1>Welcome to Stafford.dev</h1>
+//         <p>Please sign in with your Google account</p>
+//         <a href="/auth/google" class="google-btn">Sign in with Google</a>
+//         <a href="/" class="home-link">← Back to Home</a>
+//       </div>
+//     </body>
+//     </html>
+//   `);
+// });
 
 // Dashboard (success page)
 router.get('/dashboard', (req, res) => {
