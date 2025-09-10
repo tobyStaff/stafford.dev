@@ -49,10 +49,16 @@ else
     fi
 fi
 
+# Force kill any remaining processes using port 3000
+echo "🔧 Final cleanup - checking port 3000..."
+fuser -k 3000/tcp 2>/dev/null && echo "✅ Additional processes killed" || echo "ℹ️  Port 3000 clean"
+
 # Check final status
 if pgrep -f "node server.js" > /dev/null; then
     echo "⚠️  Warning: Some server processes may still be running"
-    echo "🔍 Use 'ps aux | grep node' to check manually"
+    echo "🔨 Force killing remaining node processes..."
+    pkill -9 -f "node server.js"
+    echo "✅ Force cleanup completed!"
 else
     echo "✅ All server processes stopped successfully!"
 fi

@@ -28,3 +28,6 @@ sudo ss  -tlnp | grep :22
 nano .ssh/authorized_keys
 sudo systemctl reload ssh
 claude
+nano .ssh/authorized_keys 
+claude
+claude

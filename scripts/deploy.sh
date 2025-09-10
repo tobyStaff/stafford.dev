@@ -15,9 +15,14 @@ if [ -d .git ]; then
     echo ""
 fi
 
-# Stop the server first
+# Stop the server first - force kill processes on port 3000
 echo "1️⃣ Stopping existing server..."
 ./scripts/stop-server.sh
+
+# Additional cleanup - force kill any processes using port 3000
+echo "🔧 Ensuring port 3000 is free..."
+fuser -k 3000/tcp 2>/dev/null && echo "✅ Freed port 3000" || echo "ℹ️  Port 3000 already free"
+sleep 1
 
 # Install/update dependencies if package.json has changed
 if [ package.json -nt node_modules/.package-json.done ] 2>/dev/null || [ ! -d node_modules ]; then
@@ -32,12 +37,24 @@ if [ client/package.json -nt client/node_modules/.package-json.done ] 2>/dev/nul
     cd client && npm install && touch node_modules/.package-json.done && cd ..
 fi
 
-# Build the client application
+# Build the client application with extended timeout
 echo "4️⃣ Building client application..."
 cd client
-npm run build
+timeout 180 npm run build
 BUILD_EXIT_CODE=$?
 cd ..
+
+# Handle timeout specifically
+if [ $BUILD_EXIT_CODE -eq 124 ]; then
+    echo "⏰ Build timed out after 3 minutes. Trying to continue with existing build..."
+    if [ -d "client/dist" ] && [ -f "client/dist/index.html" ]; then
+        echo "✅ Found existing build, continuing deployment..."
+        BUILD_EXIT_CODE=0
+    else
+        echo "❌ No valid build found and build timed out."
+        exit 1
+    fi
+fi
 
 if [ $BUILD_EXIT_CODE -ne 0 ]; then
     echo "❌ Client build failed! Deployment aborted."

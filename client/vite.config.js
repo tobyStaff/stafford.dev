@@ -18,6 +18,13 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'html2pdf': ['html2pdf.js']
+        }
+      }
+    }
   }
 })

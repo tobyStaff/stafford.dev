@@ -8,6 +8,7 @@
     "stop": "./scripts/stop-server.sh",
     "restart": "./scripts/restart-server.sh",
     "deploy": "./scripts/deploy.sh",
+    "quick-deploy": "./scripts/quick-deploy.sh",
     "dev": "./scripts/dev-server.sh",
     "server": "node server.js",
     "build": "cd client && npm run build",

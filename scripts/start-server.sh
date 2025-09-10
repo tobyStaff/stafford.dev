@@ -23,9 +23,10 @@ if [ ! -d "client/dist" ]; then
     cd client && npm run build && cd ..
 fi
 
-# Kill any existing server process
+# Kill any existing server process and free port 3000
 echo "🔍 Checking for existing server processes..."
 pkill -f "node server.js" 2>/dev/null
+fuser -k 3000/tcp 2>/dev/null && echo "🔧 Freed port 3000" || echo "ℹ️  Port 3000 already free"
 sleep 2
 
 # Start the server in background

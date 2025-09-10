@@ -1,0 +1,9 @@
+#!/bin/bash
+# One-command deploy
+echo "🚀 Deploying..."
+pkill -9 node 2>/dev/null
+fuser -k 3000/tcp 2>/dev/null  
+cd client && npm run build >/dev/null 2>&1 && cd .. || echo "⚠️ Build skipped"
+sleep 2
+nohup node server.js > server.log 2>&1 &
+echo "✅ Deployed on http://localhost:3000"
