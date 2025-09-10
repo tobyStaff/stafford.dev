@@ -172,6 +172,63 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+// Authentication middleware - require login for all routes except login/auth
+const requireAuth = (req, res, next) => {
+  // Allow access to auth routes, health check, and API endpoints for authentication
+  if (req.path.startsWith('/auth/') || 
+      req.path === '/login' || 
+      req.path === '/health' ||
+      req.path === '/api/login' ||
+      req.path === '/api/register' ||
+      req.path === '/api/user') {
+    return next();
+  }
+
+  // Check if user is authenticated via session (Google OAuth)
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  // Check if user is authenticated via JWT token
+  const token = req.headers['authorization']?.split(' ')[1];
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+      req.user = decoded;
+      return next();
+    } catch (error) {
+      // Token invalid, continue to redirect
+    }
+  }
+
+  // Not authenticated - redirect to login
+  if (req.path.startsWith('/api/')) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  
+  // For non-API routes, redirect to login
+  res.redirect('/login');
+};
+
+// Admin access restriction middleware - only allow toby.stafford@gmail.com
+const requireAdmin = (req, res, next) => {
+  if (!req.isAuthenticated() && !req.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  const userEmail = req.user?.email || req.user?.user?.email;
+  
+  if (userEmail !== 'toby.stafford@gmail.com') {
+    if (req.path.startsWith('/api/')) {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    // Redirect non-admin users away from admin sections
+    return res.redirect('/');
+  }
+
+  next();
+};
+
 // Input validation helpers
 const validateInput = (req, res, next) => {
   const errors = validationResult(req);
@@ -181,8 +238,12 @@ const validateInput = (req, res, next) => {
   next();
 };
 
+// Apply site-wide authentication middleware
+app.use(requireAuth);
+
 // Route imports (only auth routes needed, React handles UI routing)
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 
 // Health check route
 app.get('/health', (req, res) => {
@@ -198,8 +259,11 @@ app.get('/api/user', (req, res) => {
   }
 });
 
-// Mount only auth routes (React handles UI routing)
+// Mount auth routes (React handles UI routing)
 app.use('/', authRoutes);
+
+// Mount admin routes with admin restriction
+app.use('/admin', requireAdmin, adminRoutes);
 
 // Auth routes with validation
 app.post('/api/register', 

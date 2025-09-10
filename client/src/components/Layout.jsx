@@ -105,12 +105,14 @@ const Layout = ({ children }) => {
                 </div>
               </div>
               <div className="space-y-1">
-                <Link
-                  to="/admin"
-                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-primary-700 hover:text-white rounded-lg transition-colors"
-                >
-                  Admin
-                </Link>
+                {user.email === 'toby.stafford@gmail.com' && (
+                  <Link
+                    to="/admin"
+                    className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-primary-700 hover:text-white rounded-lg transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <a
                   href="/logout"
                   className="flex items-center px-4 py-2 text-sm text-red-400 hover:bg-primary-700 hover:text-red-300 rounded-lg transition-colors"
@@ -120,12 +122,10 @@ const Layout = ({ children }) => {
               </div>
             </div>
           ) : (
-            <Link
-              to="/login"
-              className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
-            >
-              Sign In
-            </Link>
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+              <p className="mt-2 text-xs text-gray-400">Loading...</p>
+            </div>
           )}
         </div>
       </div>

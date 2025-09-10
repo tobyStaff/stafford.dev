@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react'
 
 const Admin = () => {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    checkAuthStatus()
+    fetchUserData()
   }, [])
 
-  const checkAuthStatus = async () => {
+  const fetchUserData = async () => {
     try {
       const response = await fetch('/api/user', {
         credentials: 'include'
@@ -16,24 +15,19 @@ const Admin = () => {
       if (response.ok) {
         const userData = await response.json()
         setUser(userData)
-      } else {
-        // Redirect to login if not authenticated
-        window.location.href = '/login'
       }
     } catch (error) {
-      console.error('Auth check failed:', error)
-      window.location.href = '/login'
-    } finally {
-      setLoading(false)
+      console.error('Failed to fetch user data:', error)
     }
   }
 
-  if (loading) {
+  // User data is guaranteed to be available due to AdminRoute wrapper
+  if (!user) {
     return (
       <div className="min-h-screen bg-primary-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-300">Loading...</p>
+          <p className="mt-4 text-gray-300">Loading user data...</p>
         </div>
       </div>
     )

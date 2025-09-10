@@ -1,15 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Authentication middleware for admin routes
-router.use((req, res, next) => {
-  if (!req.isAuthenticated()) {
-    return res.redirect('/login');
-  }
-  next();
-});
-
-// Admin dashboard
+// Admin dashboard (authentication and admin check handled by server middleware)
 router.get('/', (req, res) => {
   res.send(`
     <!DOCTYPE html>
