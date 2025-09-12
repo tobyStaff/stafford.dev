@@ -484,6 +484,7 @@ const Professional = () => {
               <DocumentArrowDownIcon className="w-5 h-5 mr-2" />
               Export as Markdown
             </button>
+{/* Temporarily hidden PDF export button
             <button
               onClick={exportToPDF}
               disabled={isExporting}
@@ -492,6 +493,7 @@ const Professional = () => {
               <DocumentArrowDownIcon className="w-5 h-5 mr-2" />
               {isExporting ? 'Generating PDF...' : 'Export to PDF'}
             </button>
+            */}
           </div>
         </div>
         <div className="absolute inset-x-0 bottom-0">

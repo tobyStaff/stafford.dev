@@ -32,3 +32,6 @@ nano .ssh/authorized_keys
 claude
 claude
 claude 
+claude
+exit
+claude

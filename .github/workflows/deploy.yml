@@ -35,6 +35,8 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.PORT || 22 }}
         script: |
-          cd ${{ secrets.DEPLOY_PATH || '/root' }}
+          cd /apps/stafford-dev
           git pull origin main
-          ./scripts/deploy.sh
+          npm ci
+          cd client && npm ci && npm run build && cd ..
+          pm2 restart stafford-dev || pm2 start server.js --name stafford-dev

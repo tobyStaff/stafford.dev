@@ -5,6 +5,7 @@ import AdminRoute from './components/AdminRoute'
 import Home from './pages/Home'
 import Portfolio from './pages/Portfolio'
 import Professional from './pages/Professional'
+import Tools from './pages/Tools'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
 
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/professional" element={<Professional />} />
+                <Route path="/tools" element={<Tools />} />
                 <Route path="/admin" element={
                   <AdminRoute>
                     <Admin />

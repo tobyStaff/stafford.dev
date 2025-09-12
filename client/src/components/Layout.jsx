@@ -31,7 +31,7 @@ const Layout = ({ children }) => {
     { name: 'Portfolio', href: '/portfolio', icon: FolderIcon },
     { name: 'Professional', href: '/professional', icon: BriefcaseIcon },
     { name: 'Blog', href: '/blog', icon: DocumentTextIcon, disabled: true },
-    { name: 'Tools', href: '/tools', icon: WrenchScrewdriverIcon, disabled: true },
+    { name: 'Tools', href: '/tools', icon: WrenchScrewdriverIcon },
   ]
 
   const isActive = (href) => location.pathname === href
