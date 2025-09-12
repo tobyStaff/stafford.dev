@@ -463,8 +463,8 @@ const Professional = () => {
       <div className="relative bg-primary-800 hero-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
           <h1 className="text-4xl sm:text-6xl font-bold text-white mb-6">
-            Professional{' '}
-            <span className="text-purple-400">Experience</span>
+            Work{' '}
+            <span className="text-purple-400">History</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
             A comprehensive overview of my career journey, education, and professional achievements
