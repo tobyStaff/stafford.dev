@@ -27,16 +27,18 @@ jobs:
     - name: Build client
       run: cd client && npm run build
       
-    - name: Deploy to server
-      uses: appleboy/ssh-action@v1.0.3
+    - name: Setup SSH
+      uses: shimataro/ssh-key-action@v2
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
-        port: ${{ secrets.PORT || 22 }}
-        script: |
-          cd /apps/stafford-dev
-          git pull origin main
-          npm ci
-          cd client && npm ci && npm run build && cd ..
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+        
+    - name: Deploy to server
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "
+          cd /apps/stafford-dev &&
+          git pull origin main &&
+          npm ci &&
+          cd client && npm ci && npm run build && cd .. &&
           pm2 restart stafford-dev || pm2 start server.js --name stafford-dev
+        "
