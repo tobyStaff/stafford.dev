@@ -24,21 +24,18 @@ app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: {
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com", "https://fonts.googleapis.com"],
       scriptSrc: ["'self'", "https://accounts.google.com"],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: ["'self'", "https://accounts.google.com"],
-      frameSrc: ["https://accounts.google.com"]
+      frameSrc: ["https://accounts.google.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"]
     },
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
+  } : false,
+  hsts: false
 }));
 
 // Rate limiting
@@ -92,18 +89,16 @@ app.use(passport.session());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static files - serve React build in production, client/public in development
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/dist')));
-} else {
-  app.use(express.static(path.join(__dirname, 'client/public')));
-}
+// Static files - serve React build
+app.use(express.static(path.join(__dirname, 'client/dist')));
 
 // Google OAuth Strategy
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "https://stafford.dev/auth/google/callback"
+  callbackURL: process.env.NODE_ENV === 'production' 
+    ? "https://stafford.dev/auth/google/callback"
+    : `http://localhost:${PORT}/auth/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const email = profile.emails[0].value;
@@ -175,12 +170,13 @@ const verifyToken = (req, res, next) => {
 // Authentication middleware - require login for all routes except login/auth
 const requireAuth = (req, res, next) => {
   // Allow access to auth routes, health check, and API endpoints for authentication
-  if (req.path.startsWith('/auth/') || 
-      req.path === '/login' || 
+  if (req.path.startsWith('/auth/') ||
+      req.path === '/login' ||
       req.path === '/health' ||
       req.path === '/api/login' ||
       req.path === '/api/register' ||
-      req.path === '/api/user') {
+      req.path === '/api/user' ||
+      req.path.startsWith('/api/galaxy')) {
     return next();
   }
 
@@ -244,6 +240,7 @@ app.use(requireAuth);
 // Route imports (only auth routes needed, React handles UI routing)
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const galaxyRoutes = require('./routes/galaxy');
 
 // Health check route
 app.get('/health', (req, res) => {
@@ -264,6 +261,9 @@ app.use('/', authRoutes);
 
 // Mount admin routes with admin restriction
 app.use('/admin', requireAdmin, adminRoutes);
+
+// Mount galaxy API routes
+app.use('/api/galaxy', galaxyRoutes);
 
 // Admin API endpoints
 app.get('/api/admin/users', requireAdmin, async (req, res) => {
@@ -455,17 +455,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Catch-all handler for React Router in production
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/dist/index.html'));
-  });
-} else {
-  // In development, serve the client's index.html for React Router
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/index.html'));
-  });
-}
+// Catch-all handler for React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+});
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

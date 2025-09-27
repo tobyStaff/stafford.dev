@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Portfolio from './pages/Portfolio'
 import Professional from './pages/Professional'
 import Tools from './pages/Tools'
+import Galaxy from './pages/Galaxy'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
 
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/professional" element={<Professional />} />
                 <Route path="/tools" element={<Tools />} />
+                <Route path="/galaxy" element={<Galaxy />} />
                 <Route path="/admin" element={
                   <AdminRoute>
                     <Admin />

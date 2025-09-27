@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { HomeIcon, FolderIcon, BriefcaseIcon, DocumentTextIcon, WrenchScrewdriverIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, FolderIcon, BriefcaseIcon, DocumentTextIcon, WrenchScrewdriverIcon, StarIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const Layout = ({ children }) => {
   const [user, setUser] = useState(null)
@@ -30,6 +30,7 @@ const Layout = ({ children }) => {
     { name: 'Home', href: '/', icon: HomeIcon },
     { name: 'Portfolio', href: '/portfolio', icon: FolderIcon },
     { name: 'Work History', href: '/professional', icon: BriefcaseIcon },
+    { name: 'Galaxy', href: '/galaxy', icon: StarIcon },
     { name: 'Blog', href: '/blog', icon: DocumentTextIcon, disabled: true },
     { name: 'Tools', href: '/tools', icon: WrenchScrewdriverIcon },
   ]
