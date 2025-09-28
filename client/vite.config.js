@@ -1,22 +1,28 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 3001,
-    proxy: {
-      // Proxy API requests to Express server
-      '/api': 'http://localhost:3000',
-      '/auth': 'http://localhost:3000',
-      '/login': 'http://localhost:3000',
-      '/logout': 'http://localhost:3000',
-      '/dashboard': 'http://localhost:3000',
-      '/health': 'http://localhost:3000',
-    }
-  },
-  build: {
+export default defineConfig(({ mode }) => {
+  // Load env file from parent directory
+  const env = loadEnv(mode, '../', '')
+  const serverPort = env.PORT || 3000
+  const clientPort = env.CLIENT_PORT || 3001
+
+  return {
+    plugins: [react()],
+    server: {
+      port: parseInt(clientPort),
+      proxy: {
+        // Proxy API requests to Express server
+        '/api': `http://localhost:${serverPort}`,
+        '/auth': `http://localhost:${serverPort}`,
+        // '/login': `http://localhost:${serverPort}`,
+        '/logout': `http://localhost:${serverPort}`,
+        '/dashboard': `http://localhost:${serverPort}`,
+        '/health': `http://localhost:${serverPort}`,
+      }
+    },
+    build: {
     outDir: 'dist',
     sourcemap: false,
     rollupOptions: {
@@ -27,4 +33,4 @@ export default defineConfig({
       }
     }
   }
-})
+}});

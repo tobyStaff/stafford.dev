@@ -241,3 +241,11 @@ curl -X GET http://localhost:3000/api/galaxy/statistics
 # Get single prediction
 curl -X GET http://localhost:3000/api/galaxy/predictions/PREDICTION_ID
 ```
+
+## Configuring Google
+ 1. Go to the https://console.cloud.google.com/
+  2. Select your project
+  3. Navigate to APIs & Services → Credentials
+  4. Click on your OAuth 2.0 Client ID
+  5. In the Authorized redirect URIs section, add: http[s]://[domain]/auth/google/callback
+  6. Save the changes

@@ -243,6 +243,7 @@ app.use(requireAuth);
 // Route imports (only auth routes needed, React handles UI routing)
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const galaxyRoutes = require('./routes/galaxy');
 
 // Health check route
 app.get('/health', (req, res) => {
@@ -263,6 +264,9 @@ app.use('/', authRoutes);
 
 // Mount admin routes with admin restriction
 app.use('/admin', requireAdmin, adminRoutes);
+
+// Mount galaxy API routes (authenticated users only)
+app.use('/api/galaxy', galaxyRoutes);
 
 // Admin API endpoints
 app.get('/api/admin/users', requireAdmin, async (req, res) => {
