@@ -21,6 +21,7 @@ const Layout = ({ children }) => {
         const userData = await response.json()
         setUser(userData)
       }
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
       console.log('User not authenticated')
     }
@@ -37,12 +38,19 @@ const Layout = ({ children }) => {
 
   const isActive = (href) => location.pathname === href
 
+  const handleSidebarClose = () => {
+    setSidebarOpen(false)
+  }
+
   return (
     <div className="min-h-screen bg-primary-900 text-gray-100 flex">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50"
+            onClick={handleSidebarClose}
+          />
         </div>
       )}
 
@@ -55,7 +63,7 @@ const Layout = ({ children }) => {
             Stafford.dev
           </Link>
           <button
-            onClick={() => setSidebarOpen(false)}
+            onClick={handleSidebarClose}
             className="lg:hidden text-gray-400 hover:text-white"
           >
             <XMarkIcon className="w-6 h-6" />
