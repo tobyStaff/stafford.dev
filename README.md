@@ -1,6 +1,6 @@
-# Secure Web Server
+# stafford.dev - Portfolio Website
 
-A production-ready Express.js server with comprehensive security features.
+A full-stack portfolio website with secure Express.js backend, React frontend, and interactive data visualizations.
 
 ## Security Features
 
@@ -60,6 +60,21 @@ A production-ready Express.js server with comprehensive security features.
    npm start
    ```
 
+## Features
+
+### 🌌 Galaxy Visualization
+- **Interactive Predictions Map**: Observable Plot visualization of social media predictions
+- **Topic Clustering**: Smart clustering algorithms group predictions by similarity
+- **Real-time Statistics**: Live data analytics and engagement metrics
+- **Advanced Filtering**: Filter by topic, platform, confidence, date range, and search
+- **Data Processing Pipeline**: Comprehensive data normalization and preparation utilities
+
+### 📊 Data Architecture
+- **Prediction Model**: Complete database model for social media prediction posts
+- **Topic Classification**: 6 main categories (Technology, Politics, Economics, Sports, Entertainment, Science)
+- **Engagement Metrics**: Tracks likes, shares, comments with normalization
+- **Confidence Scoring**: 0-1 scale prediction confidence with statistical analysis
+
 ## API Endpoints
 
 ### Public
@@ -73,6 +88,13 @@ A production-ready Express.js server with comprehensive security features.
 ### Protected
 - `GET /api/protected` - Requires JWT token
 - `POST /api/data` - Submit validated data
+
+### Galaxy Visualization
+- `GET /api/galaxy/predictions` - Fetch predictions with filtering options
+- `GET /api/galaxy/predictions/:id` - Get single prediction details
+- `GET /api/galaxy/topics` - Get topic statistics and color mappings
+- `GET /api/galaxy/statistics` - Get comprehensive galaxy statistics
+- `POST /api/galaxy/predictions` - Create new prediction entries
 
 ## Environment Variables
 
@@ -143,6 +165,16 @@ A production-ready Express.js server with comprehensive security features.
 - ✅ Email uniqueness enforcement
 - ✅ Soft delete support (paranoid mode)
 
+### Prediction Data Management
+- ✅ Comprehensive prediction model with validation
+- ✅ Topic-based categorization and clustering
+- ✅ Engagement metrics tracking (likes, shares, comments)
+- ✅ Confidence and sentiment analysis storage
+- ✅ Platform and author information management
+- ✅ Coordinate positioning for visualization
+- ✅ Source URL tracking and verification status
+- ✅ Performance-optimized indexes for queries
+
 ### Security Features
 - ✅ bcrypt password hashing (12 rounds)
 - ✅ SQL injection prevention via Sequelize ORM
@@ -151,10 +183,31 @@ A production-ready Express.js server with comprehensive security features.
 - ✅ Prepared statements and parameterized queries
 - ✅ Input sanitization and validation
 
+## Galaxy Visualization Technical Details
+
+### Data Processing Pipeline
+- **Topic Clustering**: D3 force simulation with collision detection
+- **Position Calculation**: Smart clustering keeps related predictions grouped
+- **Data Normalization**: Engagement metrics normalized to 0-1 scale
+- **Statistical Analysis**: Real-time calculation of topic and platform statistics
+
+### Filtering Capabilities
+- **Topic Filter**: Filter by Technology, Politics, Economics, Sports, Entertainment, Science
+- **Platform Filter**: Filter by social media platform (Twitter, Reddit, LinkedIn, etc.)
+- **Confidence Range**: Filter by prediction confidence levels (0-1 scale)
+- **Date Range**: Filter predictions by creation date
+- **Text Search**: Search within prediction content and author names
+
+### Visualization Features
+- **Color Coding**: Each topic has a distinct color for easy identification
+- **Node Sizing**: Larger nodes indicate higher confidence predictions
+- **Clustering**: Related predictions are grouped together spatially
+- **Interactive Tooltips**: Hover for detailed prediction information
+- **Performance Optimized**: Handles 1000+ predictions smoothly
+
 ## Testing
 
-Test the security features:
-
+### Security Features
 ```bash
 # Register user
 curl -X POST http://localhost:3000/api/register \
@@ -170,3 +223,29 @@ curl -X POST http://localhost:3000/api/login \
 curl -X GET http://localhost:3000/api/protected \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
+
+### Galaxy API Testing
+```bash
+# Get all predictions
+curl -X GET http://localhost:3000/api/galaxy/predictions
+
+# Get predictions filtered by topic
+curl -X GET "http://localhost:3000/api/galaxy/predictions?topic=Technology&limit=50"
+
+# Get topic statistics
+curl -X GET http://localhost:3000/api/galaxy/topics
+
+# Get overall statistics
+curl -X GET http://localhost:3000/api/galaxy/statistics
+
+# Get single prediction
+curl -X GET http://localhost:3000/api/galaxy/predictions/PREDICTION_ID
+```
+
+## Configuring Google
+ 1. Go to the https://console.cloud.google.com/
+  2. Select your project
+  3. Navigate to APIs & Services → Credentials
+  4. Click on your OAuth 2.0 Client ID
+  5. In the Authorized redirect URIs section, add: http[s]://[domain]/auth/google/callback
+  6. Save the changes

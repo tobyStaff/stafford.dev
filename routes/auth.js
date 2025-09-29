@@ -99,7 +99,11 @@ router.get('/auth/google/callback',
         return res.redirect('/login');
       }
       console.log('Session saved successfully, redirecting to dashboard');
-      res.redirect('/dashboard');
+      // In development, redirect to React app on client port
+      const redirectUrl = process.env.NODE_ENV === 'production'
+        ? '/dashboard'
+        : `http://localhost:${process.env.CLIENT_PORT || 3001}/`;
+      res.redirect(redirectUrl);
     });
   }
 );

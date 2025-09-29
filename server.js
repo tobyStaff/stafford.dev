@@ -24,21 +24,18 @@ app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: {
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com", "https://fonts.googleapis.com"],
       scriptSrc: ["'self'", "https://accounts.google.com"],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: ["'self'", "https://accounts.google.com"],
-      frameSrc: ["https://accounts.google.com"]
+      frameSrc: ["https://accounts.google.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"]
     },
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
+  } : false,
+  hsts: false
 }));
 
 // Rate limiting
@@ -103,7 +100,9 @@ if (process.env.NODE_ENV === 'production') {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "https://stafford.dev/auth/google/callback"
+  callbackURL: process.env.NODE_ENV === 'production' 
+    ? "https://stafford.dev/auth/google/callback"
+    : `http://localhost:${PORT}/auth/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const email = profile.emails[0].value;
@@ -244,6 +243,7 @@ app.use(requireAuth);
 // Route imports (only auth routes needed, React handles UI routing)
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const galaxyRoutes = require('./routes/galaxy');
 
 // Health check route
 app.get('/health', (req, res) => {
@@ -264,6 +264,9 @@ app.use('/', authRoutes);
 
 // Mount admin routes with admin restriction
 app.use('/admin', requireAdmin, adminRoutes);
+
+// Mount galaxy API routes (authenticated users only)
+app.use('/api/galaxy', galaxyRoutes);
 
 // Admin API endpoints
 app.get('/api/admin/users', requireAdmin, async (req, res) => {
