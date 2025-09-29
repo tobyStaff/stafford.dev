@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production'
   ? 'https://stafford.dev/api'
-  : 'http://localhost:3000/api';
+  : '/api';
 
 // Create axios instance with default configuration
 const galaxyApi = axios.create({

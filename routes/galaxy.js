@@ -277,4 +277,154 @@ router.get('/cosmic-fact', async (req, res) => {
   }
 });
 
+// Development endpoint to seed sample prediction data
+router.post('/seed', async (req, res) => {
+  try {
+    // Check if we already have predictions
+    const existingCount = await Prediction.count();
+    if (existingCount > 0) {
+      return res.json({
+        message: 'Database already has predictions',
+        count: existingCount
+      });
+    }
+
+    // Sample prediction data
+    const samplePredictions = [
+      {
+        content: "AI will revolutionize healthcare diagnostics by 2026, with machine learning models achieving 95% accuracy in early cancer detection",
+        author_name: "@healthtech_visionary",
+        author_handle: "@healthtech_visionary",
+        author_platform: "Twitter",
+        topic: "Technology",
+        sentiment: 0.8,
+        confidence: 0.85,
+        engagement_likes: 1250,
+        engagement_shares: 340,
+        engagement_comments: 89,
+        coordinates_x: 25,
+        coordinates_y: 18
+      },
+      {
+        content: "Electric vehicles will comprise 60% of new car sales globally by 2030, driven by government mandates and battery cost reductions",
+        author_name: "@green_transport",
+        author_handle: "@green_transport",
+        author_platform: "LinkedIn",
+        topic: "Technology",
+        sentiment: 0.7,
+        confidence: 0.78,
+        engagement_likes: 892,
+        engagement_shares: 156,
+        engagement_comments: 45,
+        coordinates_x: 22,
+        coordinates_y: 25
+      },
+      {
+        content: "The next presidential election will see the highest voter turnout in US history, exceeding 75% of eligible voters",
+        author_name: "@political_analyst_DC",
+        author_handle: "@political_analyst_DC",
+        author_platform: "Twitter",
+        topic: "Politics",
+        sentiment: 0.3,
+        confidence: 0.72,
+        engagement_likes: 2100,
+        engagement_shares: 890,
+        engagement_comments: 234,
+        coordinates_x: 75,
+        coordinates_y: 15
+      },
+      {
+        content: "Bitcoin will reach $150,000 by end of 2025 as institutional adoption accelerates and regulatory clarity improves",
+        author_name: "@crypto_prophet",
+        author_handle: "@crypto_prophet",
+        author_platform: "Reddit",
+        topic: "Economics",
+        sentiment: 0.9,
+        confidence: 0.65,
+        engagement_likes: 5670,
+        engagement_shares: 1200,
+        engagement_comments: 456,
+        coordinates_x: 18,
+        coordinates_y: 85
+      },
+      {
+        content: "Global inflation will return to 2% target levels by Q3 2025 as supply chain disruptions normalize",
+        author_name: "@macro_economist",
+        author_handle: "@macro_economist",
+        author_platform: "LinkedIn",
+        topic: "Economics",
+        sentiment: 0.4,
+        confidence: 0.68,
+        engagement_likes: 445,
+        engagement_shares: 67,
+        engagement_comments: 23,
+        coordinates_x: 25,
+        coordinates_y: 78
+      },
+      {
+        content: "The Lakers will win the 2025 NBA Championship with their new roster additions and improved team chemistry",
+        author_name: "@basketball_insider",
+        author_handle: "@basketball_insider",
+        author_platform: "Twitter",
+        topic: "Sports",
+        sentiment: 0.8,
+        confidence: 0.55,
+        engagement_likes: 3200,
+        engagement_shares: 890,
+        engagement_comments: 167,
+        coordinates_x: 82,
+        coordinates_y: 85
+      },
+      {
+        content: "Taylor Swift's next album will break streaming records within 24 hours of release, surpassing 100 million streams",
+        author_name: "@music_industry_pro",
+        author_handle: "@music_industry_pro",
+        author_platform: "Instagram",
+        topic: "Entertainment",
+        sentiment: 0.9,
+        confidence: 0.88,
+        engagement_likes: 12000,
+        engagement_shares: 3400,
+        engagement_comments: 890,
+        coordinates_x: 48,
+        coordinates_y: 32
+      },
+      {
+        content: "James Webb Space Telescope will discover signs of life on an exoplanet within the next 3 years",
+        author_name: "@space_researcher",
+        author_handle: "@space_researcher",
+        author_platform: "Twitter",
+        topic: "Science",
+        sentiment: 0.7,
+        confidence: 0.45,
+        engagement_likes: 8900,
+        engagement_shares: 2100,
+        engagement_comments: 567,
+        coordinates_x: 52,
+        coordinates_y: 68
+      }
+    ];
+
+    // Insert sample data
+    const createdPredictions = await Prediction.bulkCreate(samplePredictions);
+
+    res.json({
+      message: 'Sample prediction data seeded successfully',
+      count: createdPredictions.length,
+      predictions: createdPredictions.map(p => ({
+        id: p.id,
+        content: p.content.substring(0, 50) + '...',
+        topic: p.topic
+      }))
+    });
+
+  } catch (error) {
+    console.error('Seed error:', error);
+    res.status(500).json({
+      error: 'Failed to seed sample data',
+      details: error.message
+    });
+  }
+});
+
 module.exports = router;
